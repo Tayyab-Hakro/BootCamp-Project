@@ -1,0 +1,204 @@
+// import React, { useState } from "react";
+
+// const BranchDetailsView = ({ branchData, onEditClick, onDeleteClick }) => {
+//   return (
+//     <div className="bg-white p-6 w-[90%] max-w-lg rounded-xl shadow-xl space-y-4">
+//       <h2 className="text-3xl font-semibold">Branch Head</h2>
+      
+//       <div>
+//         <label className="block mb-2 text-gray-700">Branch Code</label>
+//         <input
+//           type="text"
+//           className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:outline-none"
+//           value={branchData.branchCode}
+//           readOnly
+//         />
+//       </div>
+
+//       <div>
+//         <label className="block mb-2 text-gray-700">Branch Name</label>
+//         <input
+//           type="text"
+//           className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:outline-none"
+//           value={branchData.branchName}
+//           readOnly
+//         />
+//       </div>
+
+//       {/* Branch Head */}
+//       <div>
+//         <label className="block mb-2 text-gray-700">Branch Head</label>
+//         <input
+//           type="text"
+//           className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:outline-none"
+//           value={branchData.branchHead}
+//           readOnly
+//         />
+//       </div>
+
+//       {/* Status */}
+//       <div>
+//         <label className="block mb-2 text-gray-700">Status</label>
+//         <div className={`py-1 px-4 rounded-lg inline-block font-bold ${
+//             branchData.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+//         }`}>
+//           {branchData.status}
+//         </div>
+//       </div>
+      
+//       {/* Action Buttons */}
+//       <div className="flex justify-between pt-4 gap-4">
+//         <button
+//           className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-lg font-bold transition-colors"
+//           onClick={onDeleteClick}
+//         >
+//           Delete
+//         </button>
+//         <button
+//           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-bold transition-colors"
+//           onClick={onEditClick}
+//         >
+//           Edit
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- BranchEditModal Component (The second page/modal) ---
+// const BranchEditModal = ({ isOpen, onClose, branchData, onSave }) => {
+//   const [formData, setFormData] = useState(branchData);
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleSaveClick = () => {
+//     onSave(formData);
+//   };
+
+//   if (!isOpen) return null;
+
+//   return (
+//     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+//       <div className="bg-white w-[90%] max-w-lg rounded-xl p-6 shadow-xl">
+//         {/* Title and Close Button */}
+//         <div className="flex justify-between items-center mb-6">
+//           <h2 className="text-3xl font-semibold">Edit Branch Head</h2>
+//           <button
+//             className="text-2xl text-gray-500 hover:text-gray-900"
+//             onClick={onClose}
+//           >
+//             ✕
+//           </button>
+//         </div>
+
+//         <div className="space-y-4">
+//           {/* Branch Code (Read Only) */}
+//           <div>
+//             <label className="block mb-2 text-gray-700">Branch Code</label>
+//             <input
+//               type="text"
+//               className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100"
+//               value={formData.branchCode}
+//               readOnly
+//             />
+//           </div>
+
+//           {/* Branch Name (Read Only) */}
+//           <div>
+//             <label className="block mb-2 text-gray-700">Branch Name</label>
+//             <input
+//               type="text"
+//               className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100"
+//               value={formData.branchName}
+//               readOnly
+//             />
+//           </div>
+
+//           {/* Branch Head (Editable) */}
+//           <div>
+//             <label className="block mb-2 text-gray-700">Branch Head</label>
+//             <input
+//               type="text"
+//               name="branchHead"
+//               className="w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+//               value={formData.branchHead}
+//               onChange={handleChange}
+//             />
+//           </div>
+
+//           <div>
+//             <label className="block mb-2 text-gray-700">Status</label>
+//             <select 
+//               name="status"
+//               className="w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+//               value={formData.status}
+//               onChange={handleChange}
+//             >
+//               <option value="Active">Active</option>
+//               <option value="Inactive">Inactive</option>
+//             </select>
+//           </div>
+//         </div>
+
+//         {/* Save Button */}
+//         <button 
+//           className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-bold transition-colors"
+//           onClick={handleSaveClick}
+//         >
+//           Save
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// function App() {
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [branchData, setBranchData] = useState({
+//     branchCode: "BR-01",
+//     branchName: "Bahadurabad Branch",
+//     branchHead: "Muhammad Hunain",
+//     status: "Active",
+//   });
+
+//   const handleOpenModal = () => setIsModalOpen(true);
+//   const handleCloseModal = () => setIsModalOpen(false);
+
+//   const handleSave = (updatedData) => {
+//     setBranchData(updatedData); 
+//     setIsModalOpen(false); 
+//     console.log("Data saved successfully:", updatedData);
+//   };
+  
+//   const handleDelete = () => {
+//       alert(`Attempting to delete Branch ${branchData.branchCode}`);
+//   };
+
+//   return (
+//     <div className="p-10 flex justify-center items-start min-h-screen bg-gray-50">
+      
+//       <BranchDetailsView
+//         branchData={branchData}
+//         onEditClick={handleOpenModal}
+//         onDeleteClick={handleDelete}
+//       />
+      
+//       <BranchEditModal
+//         isOpen={isModalOpen}
+//         onClose={handleCloseModal}
+//         branchData={branchData}
+//         onSave={handleSave}
+//       />
+
+//     </div>
+//   );
+// }
+
+// export default App;

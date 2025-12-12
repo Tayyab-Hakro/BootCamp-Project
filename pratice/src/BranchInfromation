@@ -1,0 +1,149 @@
+import React, { useState } from "react";
+
+const EditBranchInformationForm = () => {
+  const [formData, setFormData] = useState({
+    branchName: "Zaitoon Ashraf",
+    dailySadaqahMSL: "2450, meals",
+    area: "Gulberg",
+    status: "Active",
+    branchSchedule: "", 
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Function to handle the form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // In a real application, you would send formData to an API here
+    console.log("Form Data Submitted:", formData);
+    alert("Branch Information Saved!");
+  };
+
+  const statusOptions = ["Active", "In Active"];
+
+  // Placeholder options for Branch Schedule (Operating Days)
+  const scheduleOptions = [
+    "Select Operating Days",
+    "Mon, Tue, Wed, Thu, Fri",
+    "Sat, Sun",
+    "All Days",
+  ];
+
+  return (
+    <div className="bg-white p-6 w-[95%] max-w-md mx-auto rounded-xl shadow-2xl">
+      {/* Title as seen in the image */}
+      <h2 className="text-2xl font-semibold mb-6">Edit Branch Information</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Branch Name Input */}
+        <div>
+          <label htmlFor="branchName" className="block text-sm font-medium text-gray-700">
+            Branch Name
+          </label>
+          <input
+            type="text"
+            id="branchName"
+            name="branchName"
+            className="mt-1 w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            value={formData.branchName}
+            onChange={handleChange}
+            placeholder="Zaitoon Ashraf"
+          />
+        </div>
+
+        {/* Daily Sadaqah MSL Input */}
+        <div>
+          <label htmlFor="dailySadaqahMSL" className="block text-sm font-medium text-gray-700">
+            Daily Sadaqah MSL
+          </label>
+          <input
+            type="text"
+            id="dailySadaqahMSL"
+            name="dailySadaqahMSL"
+            className="mt-1 w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            value={formData.dailySadaqahMSL}
+            onChange={handleChange}
+            placeholder="2450, meals"
+          />
+        </div>
+
+        {/* Area Input */}
+        <div>
+          <label htmlFor="area" className="block text-sm font-medium text-gray-700">
+            Area
+          </label>
+          <input
+            type="text"
+            id="area"
+            name="area"
+            className="mt-1 w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            value={formData.area}
+            onChange={handleChange}
+            placeholder="Gulberg"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+            Status
+          </label>
+          <select
+            id="status"
+            name="status"
+            className="mt-1 w-full border border-gray-300 p-3 rounded-lg appearance-none bg-white focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+            value={formData.status}
+            onChange={handleChange}
+          >
+            {statusOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="pt-2">
+          <h3 className="text-lg font-semibold mb-2">Branch Schedule</h3>
+          <select
+            id="branchSchedule"
+            name="branchSchedule"
+            className="mt-1 w-full border border-gray-300 p-3 rounded-lg appearance-none bg-white focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+            value={formData.branchSchedule}
+            onChange={handleChange}
+          >
+            {scheduleOptions.map((option, index) => (
+              <option key={index} value={option === "Select Operating Days" ? "" : option} disabled={index === 0}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+
+        {/* Save Button */}
+        <button
+          type="submit"
+          className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition duration-150"
+        >
+          Save
+        </button>
+      </form>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <div className="p-4 sm:p-10 flex justify-center items-center min-h-screen bg-gray-100">
+      <EditBranchInformationForm />
+    </div>
+  );
+}
+
+export default App;

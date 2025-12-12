@@ -1,0 +1,83 @@
+import React from "react";
+
+const BranchDetailsPage = () => {
+
+  // Hard-coded branch data
+  const branchData = {
+    branchCode: "BR-01",
+    branchName: "Bahadurabad Branch",
+    branchHead: "Muhammad Hunain",
+    status: "Active",
+  };
+
+  const handleEditClick = () => {
+  };
+
+  const handleDelete = () => {
+    alert(`Attempting to delete Branch ${branchData.branchCode}`);
+  };
+
+  return (
+    <div className="p-10 flex justify-center items-start min-h-screen bg-gray-50">
+      <div className="bg-white p-6 w-[90%] max-w-lg rounded-xl shadow-xl space-y-4">
+        <h2 className="text-3xl font-semibold">Branch Head</h2>
+
+        <div>
+          <label className="block mb-2 text-gray-700">Branch Code</label>
+          <input
+            type="text"
+            className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:outline-none"
+            value={branchData.branchCode}
+            readOnly
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-700">Branch Name</label>
+          <input
+            type="text"
+            className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:outline-none"
+            value={branchData.branchName}
+            readOnly
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-700">Branch Head</label>
+          <input
+            type="text"
+            className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:outline-none"
+            value={branchData.branchHead}
+            readOnly
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-700">Status</label>
+          <div className={`py-1 px-4 rounded-lg inline-block font-bold ${
+            branchData.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          }`}>
+            {branchData.status}
+          </div>
+        </div>
+
+        <div className="flex justify-between pt-4 gap-4">
+          <button
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-lg font-bold transition-colors"
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+          <button
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-bold transition-colors"
+            onClick={handleEditClick}
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BranchDetailsPage;

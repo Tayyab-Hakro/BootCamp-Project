@@ -1,0 +1,169 @@
+import React, { useState } from "react";
+
+const BranchEditPage = ({ branchData, onSave }) => {
+  const [formData, setFormData] = useState({ ...branchData });
+  const [showDayDropdown, setShowDayDropdown] = useState(false);
+
+  const days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
+  const times = ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"];
+
+  const toggleDay = (day) => {
+    setFormData((prev) => ({
+      ...prev,
+      days: prev.days.includes(day)
+        ? prev.days.filter((d) => d !== day)
+        : [...prev.days, day],
+    }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  return (
+    <div className="bg-white p-6 w-[90%] max-w-lg rounded-xl shadow-xl space-y-4">
+      <h2 className="text-3xl font-semibold">Edit Branch</h2>
+
+      <InputField label="Branch Code" value={formData.branchCode} readOnly />
+      <InputField label="Branch Name" value={formData.branchName} readOnly />
+
+      <div>
+        <label className="block mb-2 text-gray-700">Add Branch Head</label>
+        <input
+          name="branchHead"
+          className="w-full border p-3 rounded-lg"
+          value={formData.branchHead}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div>
+        <label className="block mb-2 text-gray-700">Status</label>
+        <select
+          name="status"
+          className="w-full border p-3 rounded-lg"
+          value={formData.status}
+          onChange={handleChange}
+        >
+          <option value="Active">Active</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      {/* OPERATION DAYS */}
+      <div className="relative">
+        <label className="block mb-2 text-gray-700">Branches Schedule</label>
+        <div
+          onClick={() => setShowDayDropdown(!showDayDropdown)}
+          className="w-full border p-3 rounded-lg cursor-pointer bg-gray-100"
+        >
+          {formData.days.length > 0 ? formData.days.join(", ") : "Select Days"}
+        </div>
+
+        {showDayDropdown && (
+          <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg p-4 grid grid-cols-4 gap-2 z-50">
+            {days.map((day) => (
+              <button
+                key={day}
+                onClick={() => toggleDay(day)}
+                className={`py-2 rounded-lg border text-sm font-semibold ${
+                  formData.days.includes(day)
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {day}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setShowDayDropdown(false)}
+              className="col-span-4 mt-2 bg-gray-200 py-2 rounded-lg hover:bg-gray-300 font-semibold"
+            >
+              Done
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* OPERATION TIME FLEX */}
+      <div className="relative">
+        <label className="block mb-2 text-gray-700">Operation Time</label>
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="block text-sm mb-1 font-semibold">Opening Time</label>
+            <select
+              name="openingTime"
+              className="w-full border p-2 rounded-lg"
+              value={formData.openingTime}
+              onChange={handleChange}
+            >
+              <option>Select</option>
+              {times.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex-1">
+            <label className="block text-sm mb-1 font-semibold">Closing Time</label>
+            <select
+              name="closingTime"
+              className="w-full border p-2 rounded-lg"
+              value={formData.closingTime}
+              onChange={handleChange}
+            >
+              <option>Select</option>
+              {times.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button
+        className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold"
+        onClick={() => onSave(formData)}
+      >
+        Save
+      </button>
+    </div>
+  );
+};
+
+const InputField = ({ label, value, readOnly }) => (
+  <div>
+    <label className="block mb-2 text-gray-700">{label}</label>
+    <input
+      type="text"
+      className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100"
+      value={value}
+      readOnly={readOnly}
+    />
+  </div>
+);
+
+function App() {
+  const [branchData, setBranchData] = useState({
+    branchCode: "BR-01",
+    branchName: "Bahadurabad Branch",
+    branchHead: "Muhammad Hunain",
+    status: "Active",
+    days: ["Mon", "Tues", "Wed"],
+    openingTime: "10:00 AM",
+    closingTime: "03:00 PM",
+  });
+
+  return (
+    <div className="p-10 flex justify-center bg-gray-50 min-h-screen">
+      <BranchEditPage
+        branchData={branchData}
+        onSave={(data) => setBranchData(data)}
+      />
+    </div>
+  );
+}
+
+export default App;
