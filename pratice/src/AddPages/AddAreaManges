@@ -8,12 +8,7 @@ const initialFormData = {
 };
 
 const allBranches = [
-  "Gulshan Branch",
-  "Zaitoon Ashraf",
-  "Clifton",
-  "Kharadar Branch",
-  "Gizri Branch",
-  "DHA",
+  
 ];
 
 const statusOptions = ["Active", "In Active"];

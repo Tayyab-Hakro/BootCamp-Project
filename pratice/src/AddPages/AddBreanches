@@ -4,8 +4,8 @@ const BranchEditPage = ({ branchData, onSave }) => {
   const [formData, setFormData] = useState({ ...branchData });
   const [showDayDropdown, setShowDayDropdown] = useState(false);
 
-  const days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
-  const times = ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"];
+  const days = [""];
+  const times = [""];
 
   const toggleDay = (day) => {
     setFormData((prev) => ({
@@ -147,13 +147,13 @@ const InputField = ({ label, value, readOnly }) => (
 
 function App() {
   const [branchData, setBranchData] = useState({
-    branchCode: "BR-01",
-    branchName: "Bahadurabad Branch",
-    branchHead: "Muhammad Hunain",
-    status: "Active",
-    days: ["Mon", "Tues", "Wed"],
-    openingTime: "10:00 AM",
-    closingTime: "03:00 PM",
+    branchCode: "",
+    branchName: "",
+    branchHead: "",
+    status: "",
+    days: [],
+    openingTime: "",
+    closingTime: "",
   });
 
   return (

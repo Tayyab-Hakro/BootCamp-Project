@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 const EditBranchInformationForm = () => {
   const [formData, setFormData] = useState({
-    branchName: "Zaitoon Ashraf",
-    dailySadaqahMSL: "2450, meals",
-    area: "Gulberg",
-    status: "Active",
+    branchName: "",
+    dailySadaqahMSL: "",
+    area: "",
+    status: "",
     branchSchedule: "", 
   });
 
@@ -30,9 +30,7 @@ const EditBranchInformationForm = () => {
   // Placeholder options for Branch Schedule (Operating Days)
   const scheduleOptions = [
     "Select Operating Days",
-    "Mon, Tue, Wed, Thu, Fri",
-    "Sat, Sun",
-    "All Days",
+
   ];
 
   return (
