@@ -23,7 +23,7 @@ const BranchEditPage = ({ branchData, onSave }) => {
 
   return (
     <div className="bg-white p-6 w-[90%] max-w-lg rounded-xl shadow-xl space-y-4">
-      <h2 className="text-3xl font-semibold">Edit Branch</h2>
+      <h2 className="text-3xl font-semibold">Add Branch</h2>
 
       <InputField label="Branch Code" value={formData.branchCode} readOnly />
       <InputField label="Branch Name" value={formData.branchName} readOnly />

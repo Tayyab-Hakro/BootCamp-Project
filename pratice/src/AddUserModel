@@ -1,0 +1,183 @@
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash, FaTimes } from "react-icons/fa";
+
+function App() {
+  const roles = [
+    { id: "1", name: "Branch Head" },
+    { id: "2", name: "Area Manager" },
+  ];
+
+  const branches = [
+    { id: "nzn", name: "North Nazimabad" },
+    { id: "nk", name: "New Karachi" },
+    { id: "gei", name: "Gulshan-e-Iqbal" },
+    { id: "za", name: "Zaitoon Ashraf" },
+    { id: "nzn2", name: "North Nazimabad" },
+  ];
+
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedBranches, setSelectedBranches] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showRoles, setShowRoles] = useState(false);
+  const [showBranches, setShowBranches] = useState(false);
+  const [isOpenBtn  , SetIsOpenBtn] = useState(false)
+  const handleRoleSelect = (id) => {
+    setSelectedRole(id);
+    setSelectedBranches([]); // Reset branches on role change
+  };
+
+  const handleBranchSelect = (id) => {
+    if (selectedRole === "1") {
+      setSelectedBranches([id]); // Only one branch for Branch Head
+    } else {
+      setSelectedBranches((prev) =>
+        prev.includes(id)
+          ? prev.filter((b) => b !== id)
+          : [...prev, id]
+      );
+    }
+  };
+
+  const handleAdd = () => alert("Add Clicked");
+
+  return (
+    <div className="max-w-[55%] border mx-auto mt-10 rounded-lg">
+      <div className="flex justify-between items-center p-4">
+        <h2 className="text-xl font-bold">Personal Information</h2>
+        <button className="text-gray-600 text-lg"><FaTimes /></button>
+      </div>
+
+      <div className="p-5">
+        <div className="grid grid-cols-2 gap-4">
+
+          <div>
+            <label className="block mb-1 text-sm">Employee Id</label>
+            <input type="text" value="004" className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">Name</label>
+            <input type="text" value="Syed Ahmed" className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">Email</label>
+            <input type="email" value="ahmed@gmail.com" className="w-full border p-2 rounded" />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value="********"
+                className="w-full border p-2 rounded"
+              />
+              <span
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value="********"
+                className="w-full border p-2 rounded"
+              />
+              <span
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">Contact Number</label>
+            <input type="tel" value="+92 111 222 333" className="w-full border p-2 rounded" />
+          </div>
+
+          {/* ROLES */}
+          <div>
+            <label className="block mb-1 text-sm">Roles</label>
+            <div
+              className="p-2 border rounded flex justify-between cursor-pointer"
+              onClick={() => setShowRoles(!showRoles)}
+            >
+              Roles <span>&#9660;</span>
+            </div>
+
+            {showRoles && (
+              <div className="rounded mt-2 p-2 bg-gray-50 border max-h-32 overflow-y-auto">
+                {roles.map((r) => (
+                  <label key={r.id} className="flex items-center mb-1">
+                    <input
+                      type="radio"
+                      name="role"
+                      checked={selectedRole === r.id}
+                      onChange={() => handleRoleSelect(r.id)}
+                    />
+                    <span className="ml-2 text-sm">{r.name}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm">Branches</label>
+            <div
+              className="p-2 border rounded flex justify-between cursor-pointer"
+              onClick={() => setShowBranches(!showBranches)}
+            >
+              Branches <span>&#9660;</span>
+            </div>
+
+            {showBranches && (
+              <div className="rounded mt-2 p-2 bg-gray-50 border max-h-40 overflow-y-auto">
+                {branches.map((b) => (
+                  <label key={b.id} className="flex items-center mb-1">
+                    <input
+                      type="checkbox"
+                      checked={selectedBranches.includes(b.id)}
+                      onChange={() => handleBranchSelect(b.id)}
+                    />
+                    <span className="ml-2 text-sm">{b.name}</span>
+                  </label>
+                ))}
+
+                {selectedRole === "1" ? (
+                  <p className="text-red-600 text-xs text-center mt-2">
+                    &#9432; You can select only one branch (Branch Head selected)
+                  </p>
+                ) : (
+                  <p className="text-blue-600 text-xs text-center mt-2">
+                    &#9432; You can select multiple
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+
+        <button
+          onClick={handleAdd}
+          className="w-full bg-blue-600 text-white font-semibold py-2 cursor-pointer px-4 rounded-lg"
+        >
+          Add
+        </button>
+    </div>
+  );
+}
+
+export default App;

@@ -3,12 +3,10 @@ import { Clock, Calendar, ChevronDown, Timer } from 'lucide-react';
 
 function BranchEdit() {
   const [isEditing, setIsEditing] = useState(false);
-  const [open, setOpen] = useState(false); // working days dropdown
-  const [openHour, setOpenHour] = useState(false); // operation hours
+  const [openWorkingDays, setOpenWorkingDays] = useState(false); // Renamed from 'open' for clarity
+  const [openOperationHoursSection, setOpenOperationHoursSection] = useState(false); // Renamed from 'OpenTimer'
   const [showTimePicker, setShowTimePicker] = useState({ opening: false, closing: false });
-  const [closehour, setcloseHour] = useState(false);
-  const [OpenTimer , SetOpenTimer] = useState(false)
-  const [OpenForm , SetOpenForm] = useState(false)
+
   const [formData, setFormData] = useState({
     branchName: 'Zaitoon Ashraf',
     dailySadaqah: '2450, meals',
@@ -20,9 +18,13 @@ function BranchEdit() {
     workingDays: 'Select Operation Days',
   });
 
-  const [editForm, setEditForm]  = useState({ ...formData });
+  const [editForm, setEditForm] = useState({ ...formData });
 
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  // Dummy list for time picker dropdown demonstration
+  // The original implementation used OpenTime in a confusing way, I'll keep the structure but simplify the data
+  const timeOptions = ["09", "10", "11", "12", "01", "02"]; // Simplified list for display
 
   // --- Functions ---
   const handleEdit = () => {
@@ -41,8 +43,8 @@ function BranchEdit() {
   };
 
   const resetDropdowns = () => {
-    setOpen(false);
-    setOpenHour(false);
+    setOpenWorkingDays(false);
+    setOpenOperationHoursSection(false);
     setShowTimePicker({ opening: false, closing: false });
   };
 
@@ -51,30 +53,37 @@ function BranchEdit() {
     resetDropdowns();
   };
 
-  const OpenTime =  [ "09" ,"10" ,"07" ,"09" ,"10" ,"07" ]
-  const HandleOpenHour = () =>{
-    setOpenHour(!openHour)
-  }
+  // New function to toggle time picker for a specific field ('opening' or 'closing')
+  const toggleTimePicker = (field) => {
+    setShowTimePicker(prev => ({ 
+      opening: field === 'opening' ? !prev.opening : false, 
+      closing: field === 'closing' ? !prev.closing : false,
+    }));
+  };
 
-  const HandleOpenClose = () =>{
-    setcloseHour(!closehour)
-  }
-  const OpenTimeDropdown = () =>{
-    SetOpenTimer(!OpenTimer)
-  }
-    const HandleClosepage = () => {
-      SetOpenForm(!OpenForm)
-    };
+  const toggleOperationHoursSection = () => {
+    setOpenOperationHoursSection(prev => !prev);
+    setShowTimePicker({ opening: false, closing: false }); // Close time pickers when section is toggled
+  };
+  
+  // New function to handle selection from the TimePickerDropdown
+  const handleTimeSelect = (field, newTime) => {
+    handleInputChange(field, newTime);
+    // Optionally close the time picker after selection
+    setShowTimePicker(prev => ({ ...prev, [field]: false }));
+  };
+
+
   // --- Time Picker Component ---
-  const TimePickerDropdown = ({ value, onChange }) => {
-    const hours = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+  const TimePickerDropdown = ({ value, onChange, options }) => {
+    const hours = Array.from({ length: 12 }, (_, i) => String(i === 0 ? 12 : i).padStart(2, '0')); // 12-hour format: 1, 2, ..., 12
     const minutes = ['00', '15', '30', '45'];
-    const [selectedHour = "10", selectedMinute = "00", period = "AM"] = value?.split(/[\s:]/) || [];
+    const [selectedHour, selectedMinute, period] = value?.match(/(\d+):(\d+)\s(AM|PM)/)?.slice(1) || ["10", "00", "AM"];
 
     return (
-      
       <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10 w-30">
         <div className="grid grid-cols-3 gap-1 max-h-28 overflow-y-auto">
+          {/* Hours */}
           <div className="space-y-1">
             {hours.map(hour => (
               <button
@@ -86,6 +95,7 @@ function BranchEdit() {
               </button>
             ))}
           </div>
+          {/* Minutes */}
           <div className="space-y-1">
             {minutes.map(minute => (
               <button
@@ -97,6 +107,7 @@ function BranchEdit() {
               </button>
             ))}
           </div>
+          {/* AM/PM */}
           <div className="space-y-1">
             {['AM', 'PM'].map(p => (
               <button
@@ -116,6 +127,7 @@ function BranchEdit() {
   // --- Close dropdowns on outside click ---
   useEffect(() => {
     const handleClickOutside = (e) => {
+      // Check if the click is outside any element with class 'dropdown'
       if (!e.target.closest('.dropdown')) {
         resetDropdowns();
       }
@@ -124,77 +136,63 @@ function BranchEdit() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // --- Render ---
+  // --- Render (Read-Only) ---
 
   if (!isEditing) {
+    // ... (Read-only view remains the same)
     return (
       <div className="min-h-screen bg-gray-50 p-2">
-  <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-3">
-    <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold">Branches</h1>
-      <button
-        onClick={HandleClosepage}
-        className="text-gray-400 hover:text-red-500 text-xl font-bold"
-      >
-        ✕
-      </button>
-    </div>
-
-    <div className="space-y-4">
-      <div>
-        <label className="text-gray-500 text-sm mb-2 block">Branch Name</label>
-        <div className="bg-white border border-gray-200 rounded-xl p-2 text-lg font-medium">
-          {formData.branchName}
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-3">
+          <h1 className="text-3xl font-bold mb-6">Branches</h1>
+          <div className="space-y-4">
+            <div>
+              <label className="text-gray-500 text-sm mb-2 block">Branch Name</label>
+              <div className="bg-white border border-gray-200 rounded-xl p-2 text-lg font-medium">
+                {formData.branchName}
+              </div>
+            </div>
+            <div>
+              <label className="text-gray-500 text-sm mb-2 block">Daily Sadaqah MSL</label>
+              <div className="bg-white border border-gray-200 rounded-xl p-2 text-lg font-medium">
+                {formData.dailySadaqah}
+              </div>
+            </div>
+            <div>
+              <label className="text-gray-500 text-sm mb-2 block">Area</label>
+              <div className="bg-white border border-gray-200 rounded-xl p-2 text-lg font-medium">
+                {formData.area}
+              </div>
+            </div>
+            <div>
+              <label className="text-gray-500 text-sm mb-2 block">Status</label>
+              <div className="inline-block bg-green-50 text-green-600 rounded-lg px-6 py-2 font-semibold">
+                {formData.status}
+              </div>
+            </div>
+            <div className="bg-white border border-gray-200 rounded-xl p-2 space-y-3">
+              <div className="text-lg font-medium">{formData.location}</div>
+              <div className="flex items-center text-gray-600">
+                <Clock className="w-5 h-5 mr-2" />
+                <span>{formData.openingTime} - {formData.closingTime}</span>
+              </div>
+              <div className="flex items-center text-gray-600">
+                <Calendar className="w-5 h-5 mr-2" />
+                <span>{formData.workingDays}</span>
+              </div>
+            </div>
+            <button
+              onClick={handleEdit}
+              className="w-full bg-[#0066B3] text-white rounded-xl py-4 text-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Edit
+            </button>
+          </div>
         </div>
       </div>
-
-      <div>
-        <label className="text-gray-500 text-sm mb-2 block">Daily Sadaqah MSL</label>
-        <div className="bg-white border border-gray-200 rounded-xl p-2 text-lg font-medium">
-          {formData.dailySadaqah}
-        </div>
-      </div>
-
-      <div>
-        <label className="text-gray-500 text-sm mb-2 block">Area</label>
-        <div className="bg-white border border-gray-200 rounded-xl p-2 text-lg font-medium">
-          {formData.area}
-        </div>
-      </div>
-
-      <div>
-        <label className="text-gray-500 text-sm mb-2 block">Status</label>
-        <div className="inline-block bg-green-50 text-green-600 rounded-lg px-6 py-2 font-semibold">
-          {formData.status}
-        </div>
-      </div>
-
-      <div className="bg-white border border-gray-200 rounded-xl p-2 space-y-3">
-        <div className="text-lg font-medium">{formData.location}</div>
-        <div className="flex items-center text-gray-600">
-          <Clock className="w-5 h-5 mr-2" />
-          <span>{formData.openingTime} - {formData.closingTime}</span>
-        </div>
-        <div className="flex items-center text-gray-600">
-          <Calendar className="w-5 h-5 mr-2" />
-          <span>{formData.workingDays}</span>
-        </div>
-      </div>
-
-      <button
-        onClick={handleEdit}
-        className="w-full bg-[#0066B3] text-white rounded-xl py-4 text-lg font-semibold hover:bg-blue-700 transition-colors"
-      >
-        Edit
-      </button>
-    </div>
-  </div>
-</div>
-
     );
   }
 
-  // --- Edit Page ---
+  // --- Render (Edit Page) ---
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-6">
@@ -261,13 +259,13 @@ function BranchEdit() {
             </div>
           </div>
 
-          {/* Working Days */}
+          {/* Working Days Dropdown */}
           <div className="relative dropdown">
             <label className="text-gray-500 text-sm mb-2 block">Branch Schedule</label>
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                setOpen(!open);
+                setOpenWorkingDays(prev => !prev); // Use the renamed state
               }}
               className="w-full border border-gray-200 rounded-xl p-2 text-lg cursor-pointer flex justify-between items-center"
             >
@@ -275,14 +273,14 @@ function BranchEdit() {
               <ChevronDown className="text-gray-400" />
             </div>
 
-            {open && (
-              <div className=" z-4 mt-2 w-[100%] bg-white border rounded-xl p-2 grid grid-cols-4 gap-2 shadow">
+            {openWorkingDays && ( // Use the renamed state
+              <div className="absolute z-10 mt-2 w-full bg-white border rounded-xl p-2 grid grid-cols-4 gap-2 shadow">
                 {days.map((day) => (
                   <button
                     key={day}
                     onClick={() => {
                       handleInputChange("workingDays", day);
-                      setOpen(false);
+                      setOpenWorkingDays(false);
                     }}
                     className="text-sm px-1 py-1 border border-[#0066B31F] rounded-lg hover:bg-blue-500 hover:text-white"
                   >
@@ -291,69 +289,74 @@ function BranchEdit() {
                 ))}
               </div>
             )}
-          </div>  
-
-          {/* Operation Hours */}
-          <div className="relative dropdown">
-            <div className="w-full border border-gray-200 rounded-xl p-4 text-lg cursor-pointer flex justify-between items-center"
-            >
-              <button onClick={OpenTimeDropdown}>Operation Days</button>
-              <ChevronDown className="text-gray-400" />
-            </div>
-            <div className='flex justify-between'>
-              <div>
-                <button className='text-[16px] p-2 font-bold'>Opening Time</button>  
-                <div className='300 flex justify-center items-center p-2 flex-col'>
-                  <button onClick={() => HandleOpenHour()} className='  flex gap-6 border  px-10 p-5 rounded-2xl px-'> 09:00 AM <Timer/></button>
-                 <div className='border px-4'>
-                 {openHour ? (
-         OpenTime.map((item, index) => (
-          <div className='flex justify-center gap-2 p-3'>
-
-                  <button className=' border p-2 text-[15px] font-bold ' key={index}>{item}  </button>
-                 <span className='border p-2 text-[15px] font-bold'> 00 </span>
-                  <button className='border p-2 text-[15px] font-bold'>AM</button> 
           </div>
-          
-        ))
-        
-        ) : (
-        ""
-          )}
-        </div>
 
+          {/* Operation Hours Section (Toggled by setOpenOperationHoursSection) */}
+          <div className="relative dropdown">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleOperationHoursSection();
+              }}
+              className="w-full border border-gray-200 rounded-xl p-4 text-lg cursor-pointer flex justify-between items-center"
+            >
+              <button>Operation Hours</button>
+              <ChevronDown className={`text-gray-400 transform transition-transform ${openOperationHoursSection ? 'rotate-180' : 'rotate-0'}`} />
+            </div>
+            
+            {/* Conditional Rendering for Time Pickers */}
+            {openOperationHoursSection && (
+              <div className='flex justify-between p-4 border border-t-0 border-gray-200 rounded-b-xl'>
+                
+                {/* Opening Time Picker */}
+                <div className='flex flex-col items-center relative'>
+                  <label className='text-sm p-2 font-bold'>Opening Time</label>
+                  <button 
+                    onClick={(e) => {
+                        e.stopPropagation(); 
+                        toggleTimePicker('opening');
+                    }} 
+                    className='flex gap-2 border px-4 p-2 rounded-xl items-center'
+                  > 
+                    {editForm.openingTime} <Timer className="w-4 h-4"/>
+                  </button>
+                  
+                  {/* TimePickerDropdown for Opening Time */}
+                  {showTimePicker.opening && (
+                    <TimePickerDropdown 
+                      value={editForm.openingTime} 
+                      onChange={(newTime) => handleTimeSelect('openingTime', newTime)}
+                      options={timeOptions}
+                    />
+                  )}
+                </div>
+
+                {/* Closing Time Picker */}
+                <div className='flex flex-col items-center relative'>
+                  <label className="text-sm p-2 font-bold">Closing Time</label>
+                  <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleTimePicker('closing');
+                    }}
+                    className="flex gap-2 border px-4 p-2 rounded-xl items-center"
+                  >
+                    {editForm.closingTime} <Timer className="w-4 h-4"/>
+                  </button>
+                  
+                  {/* TimePickerDropdown for Closing Time */}
+                  {showTimePicker.closing && (
+                    <TimePickerDropdown 
+                      value={editForm.closingTime} 
+                      onChange={(newTime) => handleTimeSelect('closingTime', newTime)}
+                      options={timeOptions}
+                    />
+                  )}
                 </div>
               </div>
-              {/* Closeing TIme*/}
-             <div>
-  <button className="text-[16px] p-2 font-bold">Closing Time</button>
-  
-  <div className="flex justify-center items-center p-1 flex-col mt-2">
-    <button
-      onClick={HandleOpenClose}
-      className="flex gap-6 border px-10 p-5 rounded-2xl"
-    >
-      09:00 AM <Timer />
-    </button>
-    
-<div className='border  px-4'>
-    {closehour ? (
-      OpenTime.map((item, index) => (
-        <div
-          key={index}
-          className="flex justify-center  gap-2 p-3 items-center"
-        >
-          <button className="p-2 border font-bold text-[15px]">{item}</button>
-          <span className="border p-2 text-[15px] font-bold">00</span>
-          <button className="border p-2 text-[15px] font-bold">AM</button>
-        </div>
-      )) ): ""}
-      </div>
-  </div>
-</div>
+            )}
+          </div>
 
-            </div>
-           </div>
           {/* Save Button */}
           <button
             onClick={handleSave}
